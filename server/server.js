@@ -58,8 +58,8 @@ server.use(express.json());
 // Define API Routes
 
 // GET all resources
-server.get('/resurs', (req, res) => {
-  db.all('SELECT * FROM your_table', (err, rows) => {
+server.get('/cars', (req, res) => {
+  db.all('SELECT * FROM cars', (err, rows) => {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
@@ -69,9 +69,9 @@ server.get('/resurs', (req, res) => {
 });
 
 // POST - Create a new resource
-server.post('/resurs', (req, res) => {
-  const { property1, property2 } = req.body; // Extract data from request body
-  db.run(`INSERT INTO your_table (column1, column2) VALUES (?, ?)`, [property1, property2], function (err) {
+server.post('/cars', (req, res) => {
+  const { model, year, gear, fuel, color, mileage} = req.body; 
+  db.run(`INSERT INTO cars (model,year,gear,fuel,color,mileage) VALUES (?, ?,?,?,?,?)`,[model, year, gear, fuel, color, mileage], function (err) {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
@@ -81,10 +81,10 @@ server.post('/resurs', (req, res) => {
 });
 
 // PUT - Update a resource
-server.put('/resurs/:id', (req, res) => {
-  const { property1, property2 } = req.body;
+server.put('/cars/:id', (req, res) => {
+  const { model, year, gear, fuel, color, mileage } = req.body;
   const id = req.params.id;
-  db.run(`UPDATE your_table SET column1 = ?, column2 = ? WHERE id = ?`, [property1, property2, id], function (err) {
+  db.run(`UPDATE cars SET model = ?, year = ?, gear = ?, fuel = ?, color = ?, mileage = ? WHERE id = ?`, [model, year, gear, fuel, color, mileage, id], function (err) {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
@@ -94,9 +94,9 @@ server.put('/resurs/:id', (req, res) => {
 });
 
 // DELETE - Delete a resource by ID
-server.delete('/resurs/:id', (req, res) => {
+server.delete('/cars/:id', (req, res) => {
   const id = req.params.id;
-  db.run(`DELETE FROM your_table WHERE id = ?`, id, function (err) {
+  db.run(`DELETE FROM cars WHERE id = ?`, id, function (err) {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
@@ -112,9 +112,14 @@ server.listen(PORT, () => {
 
 // Database setup (create a table)
 db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS your_table (
+  db.run(`CREATE TABLE IF NOT EXISTS cars (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    column1 TEXT,
-    column2 TEXT
+    model TEXT,
+    year INTEGER,
+    gear TEXT,
+    fuel TEXT,
+    color TEXT,
+    mileage INTEGER
   )`);
 });
+
