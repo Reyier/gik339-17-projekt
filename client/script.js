@@ -69,7 +69,8 @@ fetch(url)
             const color = car.color;
             const mileage = car.mileage;
             
-            const html = `<li>Name: ${model} ${year} ${gear} ${fuel} ${color} ${mileage} </>`;
+            const html = `<li>Name: ${model} ${year} ${gear} ${fuel} ${color} ${mileage}</li>`;
+            
             ul.insertAdjacentElement('beforeend',li);
             li.insertAdjacentHTML('beforeend', html);
         })
@@ -79,3 +80,7 @@ fetch(url)
     .catch((error) => {
         console.error('Error fetching cars:', error);
       });
+
+
+
+      // Att göra 2. VISA ALLA (R I CRUD)
