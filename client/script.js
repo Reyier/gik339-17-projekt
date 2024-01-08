@@ -30,36 +30,38 @@ fetch(url)
     console.error("Error fetching cars:", error);
   });
 
-// 3 MÖJLIGGÖRA UPPDATERING AV RESURS
-document.addEventListener("DOMContentLoaded", () => {
-  const editButton = document.getElementById("editButton"); 
+// // 3 MÖJLIGGÖRA UPPDATERING AV RESURS, buttons
+// document.addEventListener("DOMContentLoaded", () => {
+//   const editButton = document.getElementById("editButton"); 
 
-  editButton.addEventListener("click", () => {
+//   editButton.addEventListener("click", () => {
    
-    const resourceId = 1; 
+//     const resourceId = 1; 
 
    
-    fetch(`http://localhost:3000/resource/${resourceId}`)
-      .then((response) => response.json())
-      .then((resource) => {
+//     fetch(`http://localhost:3000/resource/${resourceId}`)
+//       .then((response) => response.json())
+//       .then((resource) => {
     
-        document.getElementById("inputModel").value = resource.model;
-        document.getElementById("inputYear").value = resource.year;
-        document.getElementById("inputGear").value = resource.gear;
-        document.getElementById("inputFuel").value = resource.fuel;
-        document.getElementById("inputColor").value = resource.color;
-        document.getElementById("inputMileage").value = resource.mileage;
+//         document.getElementById("inputModel").value = resource.model;
+//         document.getElementById("inputYear").value = resource.year;
+//         document.getElementById("inputGear").value = resource.gear;
+//         document.getElementById("inputFuel").value = resource.fuel;
+//         document.getElementById("inputColor").value = resource.color;
+//         document.getElementById("inputMileage").value = resource.mileage;
 
        
-        localStorage.setItem("currentResourceId", resourceId);
-      })
-      .catch((error) => {
-        console.error("Error fetching resource:", error);
-      });
-  });
-});
+//         localStorage.setItem("currentResourceId", resourceId);
+//       })
+//       .catch((error) => {
+//         console.error("Error fetching resource:", error);
+//       });
+//   });
+// });
 
 
+
+// submit
 
 const form = document.getElementById("carForm");
 form.addEventListener('submit', (e) => {
@@ -92,7 +94,7 @@ function submitForm() {
 }
 
 function submitFormData(formData) {
-    fetch("http://localhost:3000/cars", {
+    fetch(url, {
       method: "POST",
       body: formData,
     })
@@ -125,3 +127,6 @@ function clearFields() {
   document.getElementById("inputMileage").value = "";
   console.log("Fields cleared!");
 }
+
+
+
