@@ -92,18 +92,23 @@ function submitForm() {
 }
 
 function submitFormData(formData) {
-  fetch("http://localhost:3000/cars", {
-    method: "POST",
-    body: formData,
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Data sent successfully:", data);
+    fetch("http://localhost:3000/cars", {
+      method: "POST",
+      body: formData,
     })
-    .catch((error) => {
-      console.error("There was an error sending the data:", error);
-    });
-}
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Data sent successfully:", data);
+      })
+      .catch((error) => {
+        console.error("There was an error sending the data:", error);
+      });
+  }
 
 const clearButton = document.querySelector("#carForm button.btn-danger");
 clearButton.addEventListener("click", function(e) {
