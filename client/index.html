@@ -17,7 +17,7 @@
 
     <!-- Formulär  -->
 
-    <div class="container mt-5" id="carform">
+    <div class="container mt-5" id="carForm">
       <form class="row g-3">
         <div class="col-md-6">
           <label for="inputModel" class="form-label">Märke</label>
@@ -59,13 +59,12 @@
         </div>
 
         <div class="col-12">
-          <button type="submit" class="btn btn-danger " onclick="clearFields()">
-            Rensa fält
-          </button>
+          <button type="submit" class="btn btn-primary" onclick="submitFormData(event)">Lägg till</button>
         </div>
-
+    
+        <!-- Button to clear the fields -->
         <div class="col-12">
-          <button type="submit" class="btn btn-primary " onclick="SubmitEvent">Lägg till</button>
+          <button type="button" class="btn btn-danger" onclick="clearFields()">Rensa fält</button>
         </div>
       </form>
     </div>
@@ -73,25 +72,11 @@
     <!-- Lista  -->
     
 
+</div>
 
     <div class="container mt-5" id="carList">
        <div class="list-group-item flex-fill d-flex justify-content-end mb-3 ">
-        <button type="button" class="btn btn-primary mx-2 " onclick="editItem()">
-            &#9998; 
-          </button>
-          <button type="button" class="btn btn-danger" onclick="removeItem()">
-            &#128465; 
-          </button>
-       </div>
-        <ul class="list-group list-group-horizontal">
-            <li class="list-group-item flex-fill">Märke</li>
-            <li class="list-group-item flex-fill">Modellår</li>
-            <li class="list-group-item flex-fill">Växellåda</li>
-            <li class="list-group-item flex-fill">Drivmedel</li>
-            <li class="list-group-item flex-fill">Färg</li>
-            <li class="list-group-item flex-fill">Miltal</li>
-
-          </ul>
+      
     </div>
 
     <!-- Meddalande -->
