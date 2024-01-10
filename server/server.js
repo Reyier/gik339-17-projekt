@@ -62,12 +62,15 @@ server.post('/cars', (req, res) => {
 server.put('/cars/:id', (req, res) => {
   const { model, year, gear, fuel, color, mileage } = req.body;
   const id = req.params.id;
-  db.run(`UPDATE cars SET model = ?, year = ?, gear = ?, fuel = ?, color = ?, mileage = ? WHERE id = ?`, [model, year, gear, fuel, color, mileage, id], function (err) {
+  
+  const sql = `UPDATE cars SET model = ?, year = ?, gear = ?, fuel = ?, color = ?, mileage = ? WHERE id = ?`;
+  
+  db.run(sql, [model, year, gear, fuel, color, mileage, id], function (err) {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
     }
-    res.json({ message: `Resource with ID ${id} updated successfully` });
+    res.json({ message: `Car with ID ${id} updated successfully` });
   });
 });
 

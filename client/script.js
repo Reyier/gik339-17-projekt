@@ -17,7 +17,7 @@ function fetchData(){
       li.classList.add("list-group-item", 'd-flex', 'justify-content-between', 'align-items-center');
       const id = car.id;
       const data = [car.model, car.year, car.gear, car.fuel, car.color, car.mileage];
-      const names = ['Model: ', 'Year: ', 'Gear: ', 'Fuel: ', 'Color: ', 'Milage: '];
+      const names = ['Modell: ', 'Modell År: ', 'Växellåda: ', 'Bränsle: ', 'Färg: ', 'Miltal: '];
       data.forEach((item, index) =>{
         const span = document.createElement('span');
         const html = names[index] + item + ' ';
@@ -25,15 +25,20 @@ function fetchData(){
         li.appendChild(span);
       });
 
-      const btns = `<button class="btn btn-warning">Edit</button><button class="btn btn-danger">Delete</button>`;
-      li.insertAdjacentHTML('beforeend', btns);
-      li.setAttribute('id', `car_${id}`);
-      li.style.backgroundColor = car.color;
-      
-      ul.appendChild(li); 
-    });
+      const editButton = createEditButton(car.id);
+  li.appendChild(editButton);
 
-   
+      const deleteBtn = document.createElement('button');
+  deleteBtn.textContent = 'Delete';
+  deleteBtn.classList.add('btn', 'btn-danger');
+  deleteBtn.addEventListener('click', () => deleteCar(id));
+  li.appendChild(deleteBtn);
+
+  ul.appendChild(li);
+
+  
+});
+  
     carListContainer.appendChild(ul);
   })
 
@@ -42,37 +47,47 @@ function fetchData(){
   });
 }
 
+function createEditButton(id) {
+  const editBtn = document.createElement('button');
+  editBtn.textContent = 'Edit';
+  editBtn.classList.add('btn', 'btn-warning', 'mx-2');
+  editBtn.addEventListener('click', () => openEditModal(id)); // Attach event listener
+  return editBtn;
+}
 
-// // 3 MÖJLIGGÖRA UPPDATERING AV RESURS, buttons
-// document.addEventListener("DOMContentLoaded", () => {
-//   const editButton = document.getElementById("editButton"); 
+function openEditModal(carId) {
+  // Fetch car details corresponding to the carId from the server
+  fetch(`http://localhost:3001/cars/${carId}`)
+    .then((response) => response.json())
+    .then((car) => {
+      // Populate modal form fields with car details
+      // ... (your code to populate modal fields with car details) ...
 
-//   editButton.addEventListener("click", () => {
-   
-//     const resourceId = 1; 
-
-   
-//     fetch(`http://localhost:3000/resource/${resourceId}`)
-//       .then((response) => response.json())
-//       .then((resource) => {
-    
-//         document.getElementById("inputModel").value = resource.model;
-//         document.getElementById("inputYear").value = resource.year;
-//         document.getElementById("inputGear").value = resource.gear;
-//         document.getElementById("inputFuel").value = resource.fuel;
-//         document.getElementById("inputColor").value = resource.color;
-//         document.getElementById("inputMileage").value = resource.mileage;
-
-       
-//         localStorage.setItem("currentResourceId", resourceId);
-//       })
-//       .catch((error) => {
-//         console.error("Error fetching resource:", error);
-//       });
-//   });
-// });
+      // Show the edit car modal using jQuery
+      $('#editCarModal').modal('show');
+    })
+    .catch((error) => {
+      console.error('Error fetching car details:', error);
+    });
+}
 
 
+function deleteCar(id) {
+  fetch(`http://localhost:3001/cars/${id}`, {
+    method: 'DELETE'
+  })
+    .then((response) => {
+      if (response.ok) {
+        console.log(`Car with ID ${id} has been deleted.`);
+        fetchData(); // Refresh the car list after deletion
+      } else {
+        console.error(`Failed to delete car with ID ${id}.`);
+      }
+    })
+    .catch((error) => {
+      console.error('Error deleting car:', error);
+    });
+}
 
 // submit
 
@@ -120,7 +135,6 @@ function submitForm() {
 }
 
 
-
 function clearFields() {
   document.getElementById("inputModel").value = "";
   document.getElementById("inputYear").value = "";
@@ -136,3 +150,28 @@ clearButton.addEventListener("click", function(e) {
   e.preventDefault();
   clearFields();
 });
+
+
+
+// TEST MODAL
+document.getElementById('carForm').addEventListener('submit', function(event) {
+  event.preventDefault(); 
+
+
+  var myModal = new bootstrap.Modal(document.getElementById('myModal'), {});
+  myModal.show();
+
+ 
+  var closeTimeout = setTimeout(function() {
+    myModal.hide();
+  }, 20000); // Sekunderna är bugg
+
+  
+  document.getElementById('closeModalBtn').addEventListener('click', function() {
+    clearTimeout(closeTimeout);
+    myModal.hide();
+  });
+});
+
+
+
