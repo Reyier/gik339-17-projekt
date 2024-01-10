@@ -1,34 +1,47 @@
-
-const url = "http://localhost:3000/cars";
+const url = "http://localhost:3001/cars";
 const carListContainer = document.getElementById("carList");
 
-fetch(url)
+window.addEventListener('load', fetchData);
+function fetchData(){
+  carListContainer.innerHTML = "";
+  fetch(url)
   .then((response) => response.json())
-  .then((cars) => {
+  .then((object) => {
     const ul = document.createElement("ul");
-    ul.classList.add("carList");
+    ul.classList.add("carList", "list-group");
+    const cars = object.resources;
 
-    cars.forEach((car) => {
-      const li = document.createElement("li");
-      li.style.backgroundColor = car.inputColor;
-      const model = car.model;
-      const year = car.year;
-      const gear = car.gear;
-      const fuel = car.fuel;
-      const color = car.color;
-      const mileage = car.mileage;
+    cars.forEach((car) =>{
+      console.log(car);
+      const li = document.createElement('li');
+      li.classList.add("list-group-item", 'd-flex', 'justify-content-between', 'align-items-center');
+      const id = car.id;
+      const data = [car.model, car.year, car.gear, car.fuel, car.color, car.mileage];
+      const names = ['Model: ', 'Year: ', 'Gear: ', 'Fuel: ', 'Color: ', 'Milage: '];
+      data.forEach((item, index) =>{
+        const span = document.createElement('span');
+        const html = names[index] + item + ' ';
+        span.innerHTML = html;
+        li.appendChild(span);
+      });
 
-      const html = `<li>Name: ${model} ${year} ${gear} ${fuel} ${color} ${mileage}</li>`;
-
-      ul.insertAdjacentElement("beforeend", li);
-      li.insertAdjacentHTML("beforeend", html);
+      const btns = `<button class="btn btn-warning">Edit</button><button class="btn btn-danger">Delete</button>`;
+      li.insertAdjacentHTML('beforeend', btns);
+      li.setAttribute('id', `car_${id}`);
+      li.style.backgroundColor = car.color;
+      
+      ul.appendChild(li); 
     });
+
+   
     carListContainer.appendChild(ul);
   })
 
   .catch((error) => {
     console.error("Error fetching cars:", error);
   });
+}
+
 
 // // 3 MÖJLIGGÖRA UPPDATERING AV RESURS, buttons
 // document.addEventListener("DOMContentLoaded", () => {
@@ -70,9 +83,6 @@ form.addEventListener('submit', (e) => {
 });
 
 function submitForm() {
-  const formData = new FormData();
-
-  formData.append('additionalData', 'additionalValue');
 
   const model = document.getElementById("inputModel").value;
   const year = document.getElementById("inputYear").value;
@@ -81,42 +91,35 @@ function submitForm() {
   const color = document.getElementById("inputColor").value;
   const mileage = document.getElementById("inputMileage").value;
 
-  formData.append('model', model);
-  formData.append('year', year);
-  formData.append('gear', gear);
-  formData.append('fuel', fuel);
-  formData.append('color', color);
-  formData.append('mileage', mileage);
+  fetch('http://localhost:3001/cars',{
+    method: "POST",
+    headers: {'Content-Type' : 'application/json'},
+    body: JSON.stringify({
+      model: model,
+      year: year,
+      gear: gear,
+      fuel: fuel,
+      color: color,
+      mileage: mileage,
+    })
+  })
+  .then(response => response.json())
+  .then(data =>{
+    if(data.error){
+      console.error(error);
+    }else{
+      console.log("Det funka!");
+      console.log(`${data.message} with an id of: ${data.id}`);
+      fetchData();
+    }
+  })
+  .catch(error =>{
+    console.error(error);
+  })
 
-  console.log("Form submitted!");
-
-  submitFormData(formData);
 }
 
-function submitFormData(formData) {
-    fetch(url, {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Data sent successfully:", data);
-      })
-      .catch((error) => {
-        console.error("There was an error sending the data:", error);
-      });
-  }
 
-const clearButton = document.querySelector("#carForm button.btn-danger");
-clearButton.addEventListener("click", function(e) {
-  e.preventDefault();
-  clearFields();
-});
 
 function clearFields() {
   document.getElementById("inputModel").value = "";
@@ -127,6 +130,9 @@ function clearFields() {
   document.getElementById("inputMileage").value = "";
   console.log("Fields cleared!");
 }
-
-
-
+const clearButton = document.querySelector("#carForm button.btn-danger");
+clearButton.addEventListener("click", function(e) {
+  console.log('whatsapp');
+  e.preventDefault();
+  clearFields();
+});

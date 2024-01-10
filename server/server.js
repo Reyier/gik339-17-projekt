@@ -1,7 +1,10 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const server = express();
-const PORT = 3000;
+const path = require('path');
+
+
+const PORT = 3001;
 
 const db = new sqlite3.Database('database.db', (err) => {
   if (err) {
@@ -12,7 +15,15 @@ const db = new sqlite3.Database('database.db', (err) => {
 });
 
 // Middleware to parse JSON bodies
-server.use(express.json());
+server.use(express.json())
+.use(express.static('../client'))
+.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', '*');
+  res.header('Access-Control-Allow-Methods', '*');
+
+  next();
+});
 
 // Define API Routes
 
@@ -27,17 +38,24 @@ server.get('/cars', (req, res) => {
   });
 });
 
+server.get('/', (req, res) =>{
+  res.sendFile(path.join(__dirname, '../client/index.html'));
+});
+
 // POST - Create a new resource
 server.post('/cars', (req, res) => {
-  const { model, year, gear, fuel, color, mileage} = req.body; 
-  db.run(`INSERT INTO cars (model,year,gear,fuel,color,mileage) VALUES (?, ?,?,?,?,?)`,[model, year, gear, fuel, color, mileage], function (err) {
+
+  const {model, year, gear, fuel, color, mileage} = req.body;
+  const sql = 'INSERT INTO cars (model, year, gear, fuel, color, mileage) VALUES (?, ?, ?, ?, ? ,?)';
+  db.run(sql, [model, parseInt(year), gear, fuel, color, mileage], function (err) {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
       
+    }else{
+      res.json({ message: 'New resource created', id: this.lastID });
     }
-    res.json({ message: 'New resource created', id: this.lastID });
-  });
+  }); 
 });
 
 // PUT - Update a resource
@@ -79,7 +97,6 @@ db.serialize(() => {
     gear TEXT,
     fuel TEXT,
     color TEXT,
-    mileage INTEGER
+    mileage TEXT
   )`);
 });
-
