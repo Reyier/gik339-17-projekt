@@ -25,9 +25,12 @@ function fetchData(){
         li.appendChild(span);
       });
 
-      const editButton = createEditButton(car.id);
-  li.appendChild(editButton);
-
+      const editBtn = document.createElement('button');
+  editBtn.textContent = 'Edit';
+  editBtn.classList.add('btn', 'btn-warning', 'mx-2');
+  editBtn.addEventListener('click', () => openEditModal(id)); // Attach event listener
+  li.appendChild(editBtn);
+  
       const deleteBtn = document.createElement('button');
   deleteBtn.textContent = 'Delete';
   deleteBtn.classList.add('btn', 'btn-danger');
@@ -47,27 +50,22 @@ function fetchData(){
   });
 }
 
-function createEditButton(id) {
-  const editBtn = document.createElement('button');
-  editBtn.textContent = 'Edit';
-  editBtn.classList.add('btn', 'btn-warning', 'mx-2');
-  editBtn.addEventListener('click', () => openEditModal(id)); // Attach event listener
-  return editBtn;
-}
 
-function openEditModal(carId) {
-  // Fetch car details corresponding to the carId from the server
-  fetch(`http://localhost:3001/cars/${carId}`)
-    .then((response) => response.json())
+
+function openEditModal(Id) {
+  fetch(`http://localhost:3001/cars/${Id}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok.');
+      }
+      return response.json();
+    })
     .then((car) => {
       // Populate modal form fields with car details
       // ... (your code to populate modal fields with car details) ...
-
-      // Show the edit car modal using jQuery
-      $('#editCarModal').modal('show');
     })
     .catch((error) => {
-      console.error('Error fetching car details:', error);
+      console.error('Error fetching or parsing car details:', error);
     });
 }
 
