@@ -28,7 +28,7 @@ function fetchData(){
       const editBtn = document.createElement('button');
   editBtn.textContent = 'Edit';
   editBtn.classList.add('btn', 'btn-warning', 'mx-2');
-  editBtn.addEventListener('click', () => openEditModal(id)); // Attach event listener
+  editBtn.addEventListener('click', () => openEditModal(id)); 
   li.appendChild(editBtn);
   
       const deleteBtn = document.createElement('button');
@@ -52,8 +52,8 @@ function fetchData(){
 
 
 
-function openEditModal(Id) {
-  fetch(`http://localhost:3001/cars/${Id}`)
+function openEditModal(id) {
+  fetch(`http://localhost:3001/cars/${id}`)
     .then((response) => {
       if (!response.ok) {
         throw new Error('Network response was not ok.');
@@ -62,7 +62,13 @@ function openEditModal(Id) {
     })
     .then((car) => {
       // Populate modal form fields with car details
-      // ... (your code to populate modal fields with car details) ...
+      document.getElementById('editInputModel').value = car.model;
+      document.getElementById('editInputYear').value = car.year;
+      // Add other fields as needed
+
+      // Show the Bootstrap modal
+      const modal = new bootstrap.Modal(document.getElementById('editCarModal'));
+      modal.show();
     })
     .catch((error) => {
       console.error('Error fetching or parsing car details:', error);
@@ -151,7 +157,7 @@ clearButton.addEventListener("click", function(e) {
 
 
 
-// TEST MODAL
+//  MODAL
 document.getElementById('carForm').addEventListener('submit', function(event) {
   event.preventDefault(); 
 
